@@ -6,7 +6,6 @@ import FileOverview from './FileOverview';
 const ListFilesScreen = () => {
 
     const [selected, setSelected] = useState(0);
-    const setSelectedItem = (value) => setSelected(value);
     const [filteredFiles, setFilteredFiles] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -53,8 +52,8 @@ const ListFilesScreen = () => {
             <div className="container w-full mt-12 flex overflow-y-auto">
                 <div className="file-list flex-auto w-64">
                     <List className='m-0 p-0'>
-                        {filteredFiles.map((file, index) => (
-                            <ListItem key={index} selected={selected === index} onClick={() => setSelectedItem(index)} className='p-4 shadow-sm mt-4 flex'>
+                        {filteredFiles.map((file) => (
+                            <ListItem key={file.id} selected={selected === file.id} onClick={() => setSelected(file.id)} className='p-4 shadow-sm mt-4 flex'>
                                 <div className="flex-2">{file.name}</div>
                                 <div className="flex-auto text-end">
                                     <Typography className='modified-date' variant="small" color="gray">
@@ -66,7 +65,7 @@ const ListFilesScreen = () => {
                     </List>
                 </div>
                 <div className="container flex-auto w-32 border rounded-lg mx-4 text-start p-4">
-                    <FileOverview fileArray={fileArray} selectedFileIndex={selected} />
+                    <FileOverview fileArray={fileArray} selectedFileId={selected} />
                 </div>
             </div>
         </Card>
