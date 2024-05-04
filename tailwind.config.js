@@ -14,6 +14,9 @@ const config = {
       },
       animation: {
         'spin-slow': 'spin 6s linear infinite'
+      },
+      colors: {
+        'background': '#e0f4fd',
       }
     },
   },
