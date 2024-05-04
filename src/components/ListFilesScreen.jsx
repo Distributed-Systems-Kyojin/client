@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, List, ListItem, Typography } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import FileOverview from './FileOverview';
@@ -7,6 +7,8 @@ const ListFilesScreen = () => {
 
     const [selected, setSelected] = useState(0);
     const setSelectedItem = (value) => setSelected(value);
+    const [filteredFiles, setFilteredFiles] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const fileArray = [
         { id: 1, name: 'Document_xyz.docx', size: 64342, modifiedDate: '2021-09-01' },
@@ -26,6 +28,15 @@ const ListFilesScreen = () => {
         { id: 15, name: 'Code_qwe.py', size: 98765, modifiedDate: '2022-11-30' }
     ];
 
+    const handleFileSearch = () => {
+        const filteredFiles = fileArray.filter((file) => file.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        setFilteredFiles(filteredFiles);
+    }
+
+    useEffect(() => {
+        handleFileSearch();
+    }, [searchTerm]);
+
     return (
         <Card className="h-[calc(100vh-2rem)] w-full p-8 shadow-xl shadow-blue-gray-900/5">
             <div className="relative flex items-center rounded-lg shadow-md overflow-hidden p-4 w-full">
@@ -36,12 +47,13 @@ const ListFilesScreen = () => {
                     className='peer h-full w-full outline-none text-sm text-gray-700 pr-2'
                     placeholder='Search Files'
                     type='text' 
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
             <div className="container w-full mt-12 flex overflow-y-auto">
                 <div className="file-list flex-auto w-64">
                     <List className='m-0 p-0'>
-                        {fileArray.map((file, index) => (
+                        {filteredFiles.map((file, index) => (
                             <ListItem key={index} selected={selected === index} onClick={() => setSelectedItem(index)} className='p-4 shadow-sm mt-4 flex'>
                                 <div className="flex-2">{file.name}</div>
                                 <div className="flex-auto text-end">
