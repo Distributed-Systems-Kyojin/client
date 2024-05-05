@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Card, Typography, List, ListItem, ListItemPrefix, ListItemSuffix, Chip } from '@material-tailwind/react';
-import { FolderIcon, UserCircleIcon, PowerIcon, FolderArrowDownIcon, FolderPlusIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { UserCircleIcon, PowerIcon, FolderArrowDownIcon, FolderPlusIcon, MagnifyingGlassIcon, PresentationChartBarIcon } from '@heroicons/react/24/solid';
 
 const Sidebar = ({ setSelectedScreen }) => {
   return (
@@ -14,7 +14,7 @@ const Sidebar = ({ setSelectedScreen }) => {
         <List>
             <ListItem onClick={() => setSelectedScreen('dashboard')}>
                 <ListItemPrefix>
-                    <FolderIcon className="h-5 w-5" />
+                    <PresentationChartBarIcon className="h-5 w-5" />
                 </ListItemPrefix>
                 Dashboard
             </ListItem>
