@@ -14,8 +14,16 @@ const UploadFilesScreen = () => {
         setFile(null);
     }
 
-    const handleFileUpload = async (formData) => {
-        console.log(formData['file']);
+    const handleFileUpload = async () => {
+        if (! file) return;
+        const formData = new FormData();
+        try {
+            formData.append('file', file);
+            const result = await uploadFile(formData);
+            console.log(result);
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
     return (
@@ -24,16 +32,12 @@ const UploadFilesScreen = () => {
                 onDragOver={(e) => {
                     e.preventDefault();
                 }}
-                onDrop={(e) => {
+                onDrop={async (e) => {
                     e.preventDefault();
                     const { files } = e.dataTransfer;
-                    files[0] && setFileName(files[0].name);
                     if (files){
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            setFile(reader.result);
-                        }
-                        reader.readAsDataURL(files[0]);
+                        setFileName(files[0].name);
+                        setFile(files[0]);
                     }
                 }}
             >
@@ -46,11 +50,9 @@ const UploadFilesScreen = () => {
                             type="file" 
                             hidden
                             onChange={async ({ target: {files} }) => {
-                                files[0] && setFileName(files[0].name);
                                 if (files){
-                                    const formData = new FormData();
-                                    formData.append('file', files[0]);
-                                    const result = await handleFileUpload(formData);
+                                    setFileName(files[0].name);
+                                    setFile(files[0]);
                                 }
                             }}
                         />
@@ -61,18 +63,20 @@ const UploadFilesScreen = () => {
                     </Typography>
                 </Card>
             </div>
-            {file ? <div className="file-details p-4 me-auto mt-8 flex shadow-xl shadow-blue-gray-900/5">
-                <Typography variant='h6' className='flex-auto mr-2'>
-                    {fileName}
-                </Typography>
-                <TrashIcon className="h-6 w-6 text-red-500 cursor-pointer" onClick={handleClearFile} />
-            </div> : null}
-            <Button 
-                className="mt-8 me-auto w-32"
-                onClick={handleFileUpload}
-            >
-                Upload
-            </Button>
+            {file ? <>
+                <div className="file-details p-4 me-auto mt-8 flex shadow-xl shadow-blue-gray-900/5">
+                    <Typography variant='h6' className='flex-auto mr-2'>
+                        {fileName}
+                    </Typography>
+                    <TrashIcon className="h-6 w-6 text-red-500 cursor-pointer" onClick={handleClearFile} />
+                </div>
+                <Button 
+                    className="mt-8 me-auto w-32"
+                    onClick={handleFileUpload}
+                >
+                    Upload
+                </Button>
+            </> : null}
         </Card>
     );
 }
