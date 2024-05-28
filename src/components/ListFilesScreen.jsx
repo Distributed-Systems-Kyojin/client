@@ -11,24 +11,6 @@ const ListFilesScreen = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [fileList, setFileList] = useState([]);
 
-    const fileArray = [
-        { id: 1, name: 'Document_xyz.docx', size: 64342, modifiedDate: '2021-09-01' },
-        { id: 2, name: 'Presentation_abc.pptx', size: 23456, modifiedDate: '2021-10-05' },
-        { id: 3, name: 'Spreadsheet_qwe.xlsx', size: 12345, modifiedDate: '2022-01-15' },
-        { id: 4, name: 'Image_zxc.jpg', size: 98765, modifiedDate: '2021-11-20' },
-        { id: 5, name: 'Video_asd.mp4', size: 54321, modifiedDate: '2022-02-28' },
-        { id: 6, name: 'Audio_fgh.mp3', size: 87654, modifiedDate: '2021-12-10' },
-        { id: 7, name: 'Code_xyz.py', size: 34567, modifiedDate: '2022-03-05' },
-        { id: 8, name: 'Text_abc.txt', size: 45678, modifiedDate: '2022-04-15' },
-        { id: 9, name: 'Document_qwe.doc', size: 98765, modifiedDate: '2022-05-20' },
-        { id: 10, name: 'Presentation_zxc.pptx', size: 23456, modifiedDate: '2022-06-30' },
-        { id: 11, name: 'Spreadsheet_asd.xlsx', size: 87654, modifiedDate: '2022-07-25' },
-        { id: 12, name: 'Image_fgh.jpg', size: 54321, modifiedDate: '2022-08-10' },
-        { id: 13, name: 'Video_xyz.mp4', size: 12345, modifiedDate: '2022-09-15' },
-        { id: 14, name: 'Audio_abc.mp3', size: 23456, modifiedDate: '2022-10-20' },
-        { id: 15, name: 'Code_qwe.py', size: 98765, modifiedDate: '2022-11-30' }
-    ];
-
     const { fetchFileList } = useFileList();
 
     useEffect(() => {

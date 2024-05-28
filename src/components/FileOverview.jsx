@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, CardHeader, CardBody, Button } from '@material-tailwind/react';
 import { DocumentChartBarIcon, CheckIcon, ArrowDownTrayIcon } from '@heroicons/react/24/solid';
+import useFileRetrieve from '../hooks/useFileRetrieve';
 
 const FileOverview = ({ fileArray, selectedFileId }) => {
 
     const [selectedFileIndex, setSelectedFileIndex] = useState(-1);
+    const { fetchFile } = useFileRetrieve();
 
     useEffect(() => {
         const index = fileArray.findIndex((file) => file.fileId === selectedFileId);
         setSelectedFileIndex(index);
     }, [fileArray, selectedFileId]);
+
+    const handleFileDownload = async (fileId) => {
+        console.log("Downloading file ", fileId);
+        const file = await fetchFile(fileId);
+        console.log(file.headers);
+    }
 
     return (
         <div className='flex flex-col'>
@@ -51,7 +59,7 @@ const FileOverview = ({ fileArray, selectedFileId }) => {
                             Verify Integrity
                             <CheckIcon className='h-4 w-4 ml-2' />
                         </Button> */}
-                        <Button className='flex me-auto mt-4' value={fileArray[selectedFileIndex].id} onClick={(e) => handleFileDownload(e.target.value)}>
+                        <Button className='flex me-auto mt-4' value={fileArray[selectedFileIndex].fileId} onClick={(e) => handleFileDownload(e.target.value)}>
                             Download
                             <ArrowDownTrayIcon className='h-4 w-4 ml-2' />
                         </Button>
