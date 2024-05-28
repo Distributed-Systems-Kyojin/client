@@ -18,8 +18,8 @@ const FileOverview = ({ fileArray, selectedFileId }) => {
         const response = await fetchFile(fileId);
         console.log("this is the response");
         console.log(response);
-        const data = await response.arrayBuffer();
-        console.log("this is arrayBuffer");
+        const data = response.data;
+        console.log("this is data");
         console.log(data);
         const blob = new Blob([data], { type: response.headers.get('content-type') });
         const url = window.URL.createObjectURL(blob);
