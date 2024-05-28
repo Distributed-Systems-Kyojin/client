@@ -15,8 +15,21 @@ const FileOverview = ({ fileArray, selectedFileId }) => {
 
     const handleFileDownload = async (fileId) => {
         console.log("Downloading file ", fileId);
-        const file = await fetchFile(fileId);
-        console.log(file.headers);
+        const response = await fetchFile(fileId);
+        console.log("this is the response");
+        console.log(response);
+        const data = await response.arrayBuffer();
+        console.log("this is arrayBuffer");
+        console.log(data);
+        const blob = new Blob([data], { type: response.headers.get('content-type') });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        // const contentDisposition = response.headers.get('content-disposition') || '';
+        const filename = fileArray[selectedFileIndex].fileName;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
     }
 
     return (

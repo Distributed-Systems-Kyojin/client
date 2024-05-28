@@ -16,7 +16,7 @@ const ListFilesScreen = () => {
     useEffect(() => {
         const getFileList = async () => {
             const files = await fetchFileList();
-            console.log(files);
+            // console.log(files);
             setFileList(files);
             setFilteredFiles(files);
         }
