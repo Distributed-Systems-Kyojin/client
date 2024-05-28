@@ -7,7 +7,7 @@ const FileOverview = ({ fileArray, selectedFileId }) => {
     const [selectedFileIndex, setSelectedFileIndex] = useState(-1);
 
     useEffect(() => {
-        const index = fileArray.findIndex((file) => file.id === selectedFileId);
+        const index = fileArray.findIndex((file) => file.fileId === selectedFileId);
         setSelectedFileIndex(index);
     }, [fileArray, selectedFileId]);
 
@@ -23,26 +23,35 @@ const FileOverview = ({ fileArray, selectedFileId }) => {
                 {selectedFileIndex !== -1 ? <>
                     <div className="flex flex-col">
                         <Typography variant="h6" color="blue-gray" className='flex'>
-                            {fileArray[selectedFileIndex].name}
+                            {fileArray[selectedFileIndex].fileName}
                         </Typography>
                         <Typography variant="h6" color="blue-gray">
                             {/* display in bytes, KB, or MB */}
-                            {fileArray[selectedFileIndex].size > 1024 ?
-                                fileArray[selectedFileIndex].size > 1048576 ? 
-                                    `${(fileArray[selectedFileIndex].size / 1048576).toFixed(2)} MB` : 
-                                    `${(fileArray[selectedFileIndex].size / 1024).toFixed(2)} KB` : 
-                                `${fileArray[selectedFileIndex].size} bytes`}
+                            {fileArray[selectedFileIndex].fileSize > 1024 ?
+                                fileArray[selectedFileIndex].fileSize > 1048576 ? 
+                                    `${(fileArray[selectedFileIndex].fileSize / 1048576).toFixed(2)} MB` : 
+                                    `${(fileArray[selectedFileIndex].fileSize / 1024).toFixed(2)} KB` : 
+                                `${fileArray[selectedFileIndex].fileSize} bytes`}
+                        </Typography>
+                        <Typography variant="h6" color="blue-gray" className='flex'>
+                            {fileArray[selectedFileIndex].fileType}
                         </Typography>
                         <Typography variant="h6" color="blue-gray">
-                            {fileArray[selectedFileIndex].modifiedDate}
+                            Created At: {fileArray[selectedFileIndex].createdAt}
+                        </Typography>
+                        <Typography variant="h6" color="blue-gray">
+                            Last Modified: {fileArray[selectedFileIndex].lastModified}
+                        </Typography>
+                        <Typography variant="h6" color="blue-gray">
+                            Last Accessed: {fileArray[selectedFileIndex].lastAccessed}
                         </Typography>
                     </div>
                     <div className="flex flex-col my-8">
-                        <Button className='flex me-auto mt-4' value={fileArray[selectedFileIndex].id} onClick={(e) => console.log("verifying file ", e.target.value)}>
+                        {/* <Button className='flex me-auto mt-4' value={fileArray[selectedFileIndex].id} onClick={(e) => console.log("verifying file ", e.target.value)}>
                             Verify Integrity
                             <CheckIcon className='h-4 w-4 ml-2' />
-                        </Button>
-                        <Button className='flex me-auto mt-4' value={fileArray[selectedFileIndex].id} onClick={(e) => console.log("downloading file ", e.target.value)}>
+                        </Button> */}
+                        <Button className='flex me-auto mt-4' value={fileArray[selectedFileIndex].id} onClick={(e) => handleFileDownload(e.target.value)}>
                             Download
                             <ArrowDownTrayIcon className='h-4 w-4 ml-2' />
                         </Button>

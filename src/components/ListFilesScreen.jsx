@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Card, List, ListItem, Typography } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import FileOverview from './FileOverview';
+import useFileList from '../hooks/useFileList';
 
 const ListFilesScreen = () => {
 
     const [selected, setSelected] = useState(0);
     const [filteredFiles, setFilteredFiles] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [fileList, setFileList] = useState([]);
 
     const fileArray = [
         { id: 1, name: 'Document_xyz.docx', size: 64342, modifiedDate: '2021-09-01' },
@@ -27,8 +29,20 @@ const ListFilesScreen = () => {
         { id: 15, name: 'Code_qwe.py', size: 98765, modifiedDate: '2022-11-30' }
     ];
 
+    const { fetchFileList } = useFileList();
+
+    useEffect(() => {
+        const getFileList = async () => {
+            const files = await fetchFileList();
+            console.log(files);
+            setFileList(files);
+            setFilteredFiles(files);
+        }
+        getFileList();
+    }, [fetchFileList]);
+
     const handleFileSearch = () => {
-        const filteredFiles = fileArray.filter((file) => file.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        const filteredFiles = fileList.filter((file) => file.fileName.toLowerCase().includes(searchTerm.toLowerCase()));
         setFilteredFiles(filteredFiles);
     }
 
@@ -53,11 +67,11 @@ const ListFilesScreen = () => {
                 <div className="file-list flex-auto w-64">
                     <List className='m-0 p-0'>
                         {filteredFiles.map((file) => (
-                            <ListItem key={file.id} selected={selected === file.id} onClick={() => setSelected(file.id)} className='p-4 shadow-sm mt-4 flex'>
-                                <div className="flex-2">{file.name}</div>
+                            <ListItem key={file.fileId} selected={selected === file.fileId} onClick={() => setSelected(file.fileId)} className='p-4 shadow-sm mt-4 flex'>
+                                <div className="flex-2">{file.fileName}</div>
                                 <div className="flex-auto text-end">
                                     <Typography className='modified-date' variant="small" color="gray">
-                                        {file.modifiedDate}
+                                        {file.lastModified}
                                     </ Typography>
                                 </div>
                             </ListItem>
@@ -65,7 +79,7 @@ const ListFilesScreen = () => {
                     </List>
                 </div>
                 <div className="container flex-auto w-32 border rounded-lg mx-4 text-start p-4">
-                    <FileOverview fileArray={fileArray} selectedFileId={selected} />
+                    <FileOverview fileArray={fileList} selectedFileId={selected} />
                 </div>
             </div>
         </Card>

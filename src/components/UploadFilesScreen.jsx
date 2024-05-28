@@ -3,6 +3,9 @@ import { Card, Typography, Button } from '@material-tailwind/react';
 import { ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/16/solid';
 import useFileUpload from '../hooks/useFileUpload';
 
+// toastify
+import { toast } from 'react-toastify';
+
 const UploadFilesScreen = () => {
 
     const [fileName, setFileName] = useState('');
@@ -20,7 +23,8 @@ const UploadFilesScreen = () => {
         try {
             formData.append('file', file);
             const result = await uploadFile(formData);
-            console.log(result);
+            console.log(result.data);
+            toast.success(result.data.message);
         } catch (error) {
             console.log(error.message);
         }
