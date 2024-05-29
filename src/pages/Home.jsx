@@ -11,11 +11,11 @@ const Home = () => {
 
   return (
     <div className='bg-background fixed flex w-full h-full'>
-      <div className="container mx-auto flex">
-        <div className="sidebar container flex-1 content-center p-4">
+      <div className="w-full mx-auto flex">
+        <div className="sidebar container container-fluid flex-1 content-center p-4">
           <Sidebar setSelectedScreen={setSelectedScreen} />
         </div>
-        <div className="content container flex-auto content-center p-4 pl-0">
+        <div className="content container container-fluid flex-auto content-center p-4 pl-0">
           {selectedScreen === 'dashboard' && <Dashboard />}
           {selectedScreen === 'listfiles' && <ListFilesScreen />}
           {selectedScreen === 'searchfiles' && <ListFilesScreen />}
