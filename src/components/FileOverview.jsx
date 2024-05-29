@@ -16,11 +16,7 @@ const FileOverview = ({ fileArray, selectedFileId }) => {
     const handleFileDownload = async (fileId) => {
         console.log("Downloading file ", fileId);
         const response = await fetchFile(fileId);
-        console.log("this is the response");
-        console.log(response);
         const data = response.data;
-        console.log("this is data");
-        console.log(data);
         const blob = new Blob([data], { type: response.headers.get('content-type') });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -58,13 +54,13 @@ const FileOverview = ({ fileArray, selectedFileId }) => {
                             {fileArray[selectedFileIndex].fileType}
                         </Typography>
                         <Typography variant="h6" color="blue-gray">
-                            Created At: {fileArray[selectedFileIndex].createdAt}
+                            Created At: {new Date(fileArray[selectedFileIndex].createdAt).toLocaleString()}
                         </Typography>
                         <Typography variant="h6" color="blue-gray">
-                            Last Modified: {fileArray[selectedFileIndex].lastModified}
+                            Last Modified: {new Date(fileArray[selectedFileIndex].lastModified).toLocaleString()}
                         </Typography>
                         <Typography variant="h6" color="blue-gray">
-                            Last Accessed: {fileArray[selectedFileIndex].lastAccessed}
+                            Last Accessed: {new Date(fileArray[selectedFileIndex].lastAccessed).toLocaleString()}
                         </Typography>
                     </div>
                     <div className="flex flex-col my-8">
