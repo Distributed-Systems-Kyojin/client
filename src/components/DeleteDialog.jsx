@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
-import { Dialog, DialogHeader, DialogBody, DialogFooter, Typography, Button } from '@material-tailwind/react';
+import React from 'react';
+import { Dialog, DialogBody, Typography, Button } from '@material-tailwind/react';
 import { BellAlertIcon } from '@heroicons/react/24/solid';
+import useDeleteFile from '../hooks/useDeleteFile';
 
-const DeleteDialog = ({ delOpen, handleDelOpen, handleDelClose, handleFileDelete }) => {
+const DeleteDialog = ({ delOpen, handleDelOpen, fileId }) => {
+
+    const { deleteFile } = useDeleteFile();
+
+    const handleFileDelete = async () => {
+        console.log("deleting file: ", fileId);
+        const response = await deleteFile(fileId);
+        console.log(response);
+    }
 
     return (
         <Dialog open={delOpen} handler={handleDelOpen}>
@@ -16,7 +25,7 @@ const DeleteDialog = ({ delOpen, handleDelOpen, handleDelClose, handleFileDelete
                 </Typography>
             </DialogBody>
             <div className="flex justify-center space-x-2 p-4 mb-4">
-                <Button variant="text" color="blue-gray" onClick={handleDelClose}>
+                <Button variant="text" color="blue-gray" onClick={handleDelOpen}>
                     close
                 </Button>
                 <Button variant="gradient" onClick={handleFileDelete}>

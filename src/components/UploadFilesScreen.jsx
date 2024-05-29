@@ -27,6 +27,7 @@ const UploadFilesScreen = () => {
             toast.success(result.data.message);
         } catch (error) {
             console.log(error.message);
+            toast.error("An error occurred while uploading the file. Please try again later.");
         }
     }
 

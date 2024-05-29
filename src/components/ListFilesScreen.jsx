@@ -4,8 +4,10 @@ import { MagnifyingGlassIcon, ArrowDownTrayIcon, TrashIcon } from '@heroicons/re
 import FileOverview from './FileOverview';
 import useFileList from '../hooks/useFileList';
 import useFileRetrieve from '../hooks/useFileRetrieve';
-
 import DeleteDialog from './DeleteDialog';
+
+// toastify
+import { toast } from 'react-toastify';
 
 const ListFilesScreen = () => {
 
@@ -16,21 +18,21 @@ const ListFilesScreen = () => {
 
     useEffect(() => {
         const getFileList = async () => {
-            const files = await fetchFileList();
-            setFileList(files);
-            setFilteredFiles(files);
+            try {
+                const files = await fetchFileList();
+                setFileList(files);
+                setFilteredFiles(files);
+            } catch (error) {
+                toast.error(error.message);
+            }
         }
         getFileList();
     }, [fetchFileList]);
 
     // related to delete dialog box
     const [delOpen, setDelOpen] = useState(false);
-    const handleDelOpen = () => setDelOpen(true);
-    const handleDelClose = () => setDelOpen(false);
-    const handleFileDelete = async (fileId) => {
-        handleDelOpen();
-        console.log("Deleting file ", fileId);
-    }
+    const [currFileId, setCurrFileId] = useState(null);
+    const handleDelOpen = () => setDelOpen(!delOpen);
 
     // related to file list table
     const TABLE_HEAD = ['File Name', 'Type', 'Size', 'Created At', 'Last Modified', 'Last Accessed', 'Actions'];
@@ -66,16 +68,22 @@ const ListFilesScreen = () => {
 
     const handleFileDownload = async (fileId, fileName) => {
         console.log("Downloading file ", fileId);
-        const response = await fetchFile(fileId);
-        const data = response.data;
-        const blob = new Blob([data], { type: response.headers.get('content-type') });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        // const contentDisposition = response.headers.get('content-disposition') || '';
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
+        try {
+            const response = await fetchFile(fileId);
+            const data = response.data;
+            const blob = new Blob([data], { type: response.headers.get('content-type') });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            // const contentDisposition = response.headers.get('content-disposition') || '';
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            toast.success("file downloaded successfully");
+        } catch (error) {
+            console.log(error.message);
+            toast.error("An error occurred while downloading the file. Please try again later");
+        }
     }
 
     return (
@@ -180,7 +188,10 @@ const ListFilesScreen = () => {
                                             <IconButton variant='text' ripple={true} value={fileId} onClick={(e) => handleFileDownload(fileId, fileName)}>
                                                 <ArrowDownTrayIcon className="h-5 w-5" />
                                             </IconButton>
-                                            <IconButton variant='text' ripple={true} value={fileId} onClick={(e) => handleFileDelete(fileId)}>
+                                            <IconButton variant='text' ripple={true} value={fileId} onClick={() => {
+                                                setCurrFileId(fileId);
+                                                handleDelOpen();
+                                            }}>
                                                 <TrashIcon className="h-5 w-5" />
                                             </IconButton>
                                         </td>
@@ -207,8 +218,7 @@ const ListFilesScreen = () => {
             <DeleteDialog 
                 delOpen={delOpen} 
                 handleDelOpen={handleDelOpen} 
-                handleDelClose={handleDelClose}
-                handleFileDelete={handleFileDelete}
+                fileId={currFileId}
             />
         </>
     );
