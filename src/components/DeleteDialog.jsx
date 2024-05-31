@@ -14,10 +14,9 @@ const DeleteDialog = ({ delOpen, handleDelOpen, fileId, getFileList }) => {
         console.log("deleting file: ", fileId);
         try {
             const response = await deleteFile(fileId);
-            // console.log(response);
-            // this should essentially update the file list displayed without refreshing
+            console.log(response);
             getFileList();
-
+            handleDelOpen();
         } catch (error) {
             console.log(error.message);
             toast.error("An error occurred while deleting the file. Please try again later.");

@@ -125,7 +125,7 @@ const ListFilesScreen = () => {
                     <div className="container flex-auto w-32 border rounded-lg mx-4 text-start p-4">
                         <FileOverview fileArray={fileList} selectedFileId={selected} />
                     </div> */}
-                    <Card className="h-full w-full overflow-scroll">
+                    {filteredFiles.length !== 0 ? <Card className="h-full w-full overflow-scroll">
                         <table className="w-full table-auto text-left">
                             <thead>
                                 <tr>
@@ -232,7 +232,7 @@ const ListFilesScreen = () => {
                                 </Button>
                             </div>
                         </CardFooter>
-                    </Card>
+                    </Card> : <Typography variant='paragraph'>No files to display</Typography>}
                 </div>
             </Card>
             <DeleteDialog 
