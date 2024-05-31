@@ -16,16 +16,17 @@ const ListFilesScreen = () => {
     const [filteredFiles, setFilteredFiles] = useState([]);
     const { fetchFileList } = useFileList();
 
-    useEffect(() => {
-        const getFileList = async () => {
-            try {
-                const files = await fetchFileList();
-                setFileList(files);
-                setFilteredFiles(files);
-            } catch (error) {
-                toast.error(error.message);
-            }
+    const getFileList = async () => {
+        try {
+            const files = await fetchFileList();
+            setFileList(files);
+            setFilteredFiles(files);
+        } catch (error) {
+            toast.error(error.message);
         }
+    }
+
+    useEffect(() => {
         getFileList();
     }, [fetchFileList]);
 
@@ -66,6 +67,7 @@ const ListFilesScreen = () => {
     // related to file download
     const { fetchFile } = useFileRetrieve();
     const [isFileDownloaded, setIsFileDownloaded] = useState(true);
+    const [currDownloadingFileId, setCurrDownloadingFileId] = useState(null);
 
     const handleFileDownload = async (fileId, fileName) => {
         console.log("Downloading file ", fileId);
@@ -81,13 +83,13 @@ const ListFilesScreen = () => {
             link.setAttribute('download', fileName);
             document.body.appendChild(link);
             link.click();
-            setIsFileDownloaded(true);
             toast.success("file downloaded successfully");
         } catch (error) {
             console.log(error.message);
             toast.error("An error occurred while downloading the file. Please try again later");
         } finally {
-            setCurrFileId(null);
+            setIsFileDownloaded(true);
+            setCurrDownloadingFileId(null);
         }
     }
 
@@ -194,14 +196,14 @@ const ListFilesScreen = () => {
                                                 variant='text' 
                                                 ripple={true} 
                                                 value={fileId} 
-                                                onClick={(e) => {
-                                                    setCurrFileId(fileId);
+                                                onClick={() => {
+                                                    setCurrDownloadingFileId(fileId);
                                                     handleFileDownload(fileId, fileName);
                                                 }} 
                                                 disabled={!isFileDownloaded}
                                             >
                                                 {
-                                                    (currFileId === fileId)
+                                                    (currDownloadingFileId === fileId)
                                                         ? <Spinner className='h-4 w-4' />
                                                         : <ArrowDownTrayIcon className='h-5 w-5' />
                                                 }
@@ -237,6 +239,7 @@ const ListFilesScreen = () => {
                 delOpen={delOpen} 
                 handleDelOpen={handleDelOpen} 
                 fileId={currFileId}
+                getFileList={getFileList}
             />
         </>
     );

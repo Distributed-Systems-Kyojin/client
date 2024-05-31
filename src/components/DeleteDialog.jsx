@@ -3,14 +3,25 @@ import { Dialog, DialogBody, Typography, Button } from '@material-tailwind/react
 import { BellAlertIcon } from '@heroicons/react/24/solid';
 import useDeleteFile from '../hooks/useDeleteFile';
 
-const DeleteDialog = ({ delOpen, handleDelOpen, fileId }) => {
+// toastify
+import { toast } from 'react-toastify';
+
+const DeleteDialog = ({ delOpen, handleDelOpen, fileId, getFileList }) => {
 
     const { deleteFile } = useDeleteFile();
 
     const handleFileDelete = async () => {
         console.log("deleting file: ", fileId);
-        const response = await deleteFile(fileId);
-        console.log(response);
+        try {
+            const response = await deleteFile(fileId);
+            // console.log(response);
+            // this should essentially update the file list displayed without refreshing
+            getFileList();
+
+        } catch (error) {
+            console.log(error.message);
+            toast.error("An error occurred while deleting the file. Please try again later.");
+        }
     }
 
     return (
