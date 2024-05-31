@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Typography, Button } from '@material-tailwind/react';
+import { Card, Typography, Button, Spinner } from '@material-tailwind/react';
 import { ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/16/solid';
 import useFileUpload from '../hooks/useFileUpload';
 
@@ -10,6 +10,7 @@ const UploadFilesScreen = () => {
 
     const [fileName, setFileName] = useState('');
     const [file, setFile] = useState(null);
+    const [isUploaded, setIsUploaded] = useState(true);
     const { uploadFile } = useFileUpload();
 
     const handleClearFile = () => {
@@ -18,6 +19,7 @@ const UploadFilesScreen = () => {
     }
 
     const handleFileUpload = async () => {
+        setIsUploaded(false);
         if (! file) return;
         const formData = new FormData();
         try {
@@ -28,6 +30,8 @@ const UploadFilesScreen = () => {
         } catch (error) {
             console.log(error.message);
             toast.error("An error occurred while uploading the file. Please try again later.");
+        } finally {
+            setIsUploaded(true);
         }
     }
 
@@ -76,10 +80,11 @@ const UploadFilesScreen = () => {
                     <TrashIcon className="h-6 w-6 text-red-500 cursor-pointer" onClick={handleClearFile} />
                 </div>
                 <Button 
-                    className="mt-8 me-auto w-32"
+                    className={`mt-8 me-auto w-32 text-center`}
                     onClick={handleFileUpload}
+                    disabled={!isUploaded}
                 >
-                    Upload
+                    {isUploaded ? "Upload" : <Spinner className='mx-auto h-4 w-4' />}
                 </Button>
             </> : null}
         </Card>
