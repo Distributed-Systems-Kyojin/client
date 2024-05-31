@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, CardFooter, Button, IconButton } from "@material-tailwind/react";
+import { Card, Typography, CardFooter, Button, IconButton, Spinner } from "@material-tailwind/react";
 import { MagnifyingGlassIcon, ArrowDownTrayIcon, TrashIcon } from '@heroicons/react/24/solid';
-import FileOverview from './FileOverview';
+// import FileOverview from './FileOverview';
 import useFileList from '../hooks/useFileList';
 import useFileRetrieve from '../hooks/useFileRetrieve';
 import DeleteDialog from './DeleteDialog';
@@ -65,9 +65,11 @@ const ListFilesScreen = () => {
 
     // related to file download
     const { fetchFile } = useFileRetrieve();
+    const [isFileDownloaded, setIsFileDownloaded] = useState(true);
 
     const handleFileDownload = async (fileId, fileName) => {
         console.log("Downloading file ", fileId);
+        setIsFileDownloaded(false);
         try {
             const response = await fetchFile(fileId);
             const data = response.data;
@@ -79,10 +81,13 @@ const ListFilesScreen = () => {
             link.setAttribute('download', fileName);
             document.body.appendChild(link);
             link.click();
+            setIsFileDownloaded(true);
             toast.success("file downloaded successfully");
         } catch (error) {
             console.log(error.message);
             toast.error("An error occurred while downloading the file. Please try again later");
+        } finally {
+            setCurrFileId(null);
         }
     }
 
@@ -185,8 +190,21 @@ const ListFilesScreen = () => {
                                             </Typography>
                                         </td>
                                         <td className={classes}>
-                                            <IconButton variant='text' ripple={true} value={fileId} onClick={(e) => handleFileDownload(fileId, fileName)}>
-                                                <ArrowDownTrayIcon className="h-5 w-5" />
+                                            <IconButton 
+                                                variant='text' 
+                                                ripple={true} 
+                                                value={fileId} 
+                                                onClick={(e) => {
+                                                    setCurrFileId(fileId);
+                                                    handleFileDownload(fileId, fileName);
+                                                }} 
+                                                disabled={!isFileDownloaded}
+                                            >
+                                                {
+                                                    (currFileId === fileId)
+                                                        ? <Spinner className='h-4 w-4' />
+                                                        : <ArrowDownTrayIcon className='h-5 w-5' />
+                                                }
                                             </IconButton>
                                             <IconButton variant='text' ripple={true} value={fileId} onClick={() => {
                                                 setCurrFileId(fileId);
