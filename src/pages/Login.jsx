@@ -44,7 +44,7 @@ const Login = () => {
                     </Button>
                     <Typography color="gray" className="mt-4 text-center font-normal">
                         Do not have an account?{" "}
-                        <a href="#" className="font-medium text-gray-900">
+                        <a href="/register" className="font-medium text-gray-900">
                             Sign Up
                         </a>
                     </Typography>
