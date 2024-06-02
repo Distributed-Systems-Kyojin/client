@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Card, Input, Checkbox, Button, Typography, Spinner } from '@material-tailwind/react';
 import { CheckCircleIcon, InformationCircleIcon, CheckIcon, ArrowRightIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
+import api from '../services/api';
 
 const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -66,7 +67,6 @@ const Register = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleSubmit = async (e) => {
-        console.log("handle submit is called");
         e.preventDefault();
         setIsSubmitted(true);
         // validate the submitted information again to be cautious
@@ -79,8 +79,25 @@ const Register = () => {
             setIsSubmitted(false);
             return;
         }
-        setSuccess(true);
-        console.log('Submitted!');
+
+        try {
+            const payload = {
+                username,
+                email,
+                password
+            }
+            const response = await api.post('/auth/register', payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            setSuccess(true);
+            console.log(response.data);
+        } catch (error) {
+            setErrMsg(error.response.data.error.message);
+        } finally {
+            setIsSubmitted(false);
+        }
     }
     
     return (
@@ -109,10 +126,7 @@ const Register = () => {
                                 Sign Up
                             </Typography>
                         </div>
-                        <Typography color="gray" className="mt-1 font-normal text-center">
-                            Nice to meet you! Enter your details to register.
-                        </Typography>
-                        <p ref={errRef} className={errMsg ? "text-red-500" : "hidden"} aria-live='assertive'>{errMsg}</p>
+                        <p ref={errRef} className={errMsg ? "flex text-red-500 mt-4" : "hidden"} aria-live='assertive'>{errMsg}</p>
                         <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
                             <div className="mb-1 flex flex-col gap-6">
                                 <Typography variant="h6" color="blue-gray" className="-mb-3">
@@ -203,7 +217,7 @@ const Register = () => {
                                     onBlur={() => setPasswordFocus(false)}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
-                                <p id='pwdnote' className={passwordFocus && password && !validPassword ? "flex flex-col text-red-500" : "hidden"}>
+                                <div id='pwdnote' className={passwordFocus && password && !validPassword ? "flex flex-col text-red-500" : "hidden"}>
                                     8 to 24 characters. At least one uppercase letter, one lowercase letter, one number, one special character.
                                     Allowed special characters: 
                                     <div>
@@ -211,7 +225,7 @@ const Register = () => {
                                         <span aria-label='hashtag'>#</span>
                                         <span aria-label='dollar sign'>$</span> <span aria-label='percent'>%</span>
                                     </div>
-                                </p>
+                                </div>
                                 <Typography variant="h6" color="blue-gray" className="-mb-3">
                                     Confirm Password
                                     {validConfirmPassword && confirmPassword ? <span>
