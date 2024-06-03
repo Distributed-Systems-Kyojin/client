@@ -1,7 +1,56 @@
-import React from 'react';
-import { Card, Input, Checkbox, Button, Typography } from '@material-tailwind/react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Card, Input, Button, Typography, Spinner } from '@material-tailwind/react';
+import { Link } from 'react-router-dom';
+import api from '../services/api';
 
 const Login = () => {
+
+    const emailRef = useRef();
+    const errRef = useRef();
+
+    const [email, setEmail] = useState('');
+    const [pwd, setPwd] = useState('');
+    const [errMsg, setErrMsg] = useState('');
+    const [success, setSuccess] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    useEffect(() => {
+        emailRef.current.focus();
+    }, []);
+    
+    useEffect(() => {
+        setErrMsg('');
+    }, [email, pwd]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitted(true);
+
+        if (!email || !pwd) {
+            setErrMsg('Please fill in all fields');
+            setIsSubmitted(false);
+            return;
+        }
+
+        try {
+            const payload = {
+                email,
+                password: pwd
+            };
+            const response = await api.post('/auth/login', payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            setSuccess(true);
+            console.log(response.data);
+        } catch (error) {
+            setErrMsg(error.response.data.error.message);
+        } finally {
+            setIsSubmitted(false);
+        }
+    }
+
     return (
         <div className="container container-fluid mx-auto w-full h-screen flex justify-center items-center">
             <Card color="transparent" shadow={false}>
@@ -10,9 +59,7 @@ const Login = () => {
                         Sign In
                     </Typography>
                 </div>
-                <Typography color="gray" className="mt-1 font-normal text-center">
-                    Hello Agaaain! Enter your details to Login.
-                </Typography>
+                <p ref={errRef} className={errMsg ? "flex text-red-500 mt-4" : "hidden"} aria-live='assertive'>{errMsg}</p>
                 <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
                     <div className="mb-1 flex flex-col gap-6">
                         <Typography variant="h6" color="blue-gray" className="-mb-3">
@@ -20,11 +67,16 @@ const Login = () => {
                         </Typography>
                         <Input
                             size="lg"
-                            placeholder="name@mail.com"
                             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                             labelProps={{
                             className: "before:content-none after:content-none",
                             }}
+                            type='text'
+                            id='email'
+                            ref={emailRef}
+                            value={email}
+                            required
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <Typography variant="h6" color="blue-gray" className="-mb-3">
                             Password
@@ -32,21 +84,29 @@ const Login = () => {
                         <Input
                             type="password"
                             size="lg"
-                            placeholder="********"
                             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
                             labelProps={{
                             className: "before:content-none after:content-none",
                             }}
+                            id='password'
+                            value={pwd}
+                            required
+                            onChange={(e) => setPwd(e.target.value)}
                         />
                     </div>
-                    <Button className="mt-6" fullWidth>
-                        sign in
+                    <Button 
+                        className="mt-6" 
+                        fullWidth
+                        disabled={isSubmitted}
+                        onClick={handleSubmit}
+                    >
+                        {isSubmitted ? <Spinner size="sm" color="gray" /> : "Sign in"}
                     </Button>
                     <Typography color="gray" className="mt-4 text-center font-normal">
                         Do not have an account?{" "}
-                        <a href="/register" className="font-medium text-gray-900">
+                        <Link to="/register" className="font-medium text-gray-900">
                             Sign Up
-                        </a>
+                        </Link>
                     </Typography>
                 </form>
             </Card>

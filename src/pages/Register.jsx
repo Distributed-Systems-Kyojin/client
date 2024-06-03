@@ -35,7 +35,7 @@ const Register = () => {
 
     // set the focus on the username when the component loads
     useEffect(() => {
-        // usernameRef.current.focus();
+        usernameRef.current.focus();
     }, []);
 
     // validate the username input everytime the username changes
@@ -279,9 +279,9 @@ const Register = () => {
                             </Button>
                             <Typography color="gray" className="mt-4 text-center font-normal">
                                 Already have an account?{" "}
-                                <a href="/login" className="font-medium text-gray-900">
+                                <Link to="/login" className="font-medium text-gray-900">
                                     Sign in
-                                </a>
+                                </Link>
                             </Typography>
                         </form>
                     </Card>
