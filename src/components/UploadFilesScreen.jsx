@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, Typography, Button, Spinner } from '@material-tailwind/react';
 import { ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/16/solid';
 import useFileUpload from '../hooks/useFileUpload';
@@ -13,6 +14,9 @@ const UploadFilesScreen = () => {
     const [isUploaded, setIsUploaded] = useState(true);
     const { uploadFile } = useFileUpload();
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const handleClearFile = () => {
         setFileName('');
         setFile(null);
@@ -24,12 +28,17 @@ const UploadFilesScreen = () => {
         const formData = new FormData();
         try {
             formData.append('file', file);
+            console.log("inside handleFileUpload: ", file);
             const result = await uploadFile(formData);
-            console.log(result.data);
             toast.success(result.data.message);
         } catch (error) {
-            console.log(error.message);
-            toast.error("An error occurred while uploading the file. Please try again later.");
+            if (error?.response?.data?.error.status === 403) {
+                toast.error(error?.response?.data?.error.message);
+                navigate('/login', { state: { from: location.pathname }, replace: true });
+                return;
+            }
+            console.log(error?.response?.data?.error);
+            toast.error(error?.response?.data?.error.message);
         } finally {
             setIsUploaded(true);
         }
