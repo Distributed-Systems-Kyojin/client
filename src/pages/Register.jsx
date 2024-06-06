@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Card, Input, Checkbox, Button, Typography, Spinner } from '@material-tailwind/react';
 import { CheckCircleIcon, InformationCircleIcon, CheckIcon, ArrowRightIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
+import axios from '../services/api';
 
 const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -86,7 +86,7 @@ const Register = () => {
                 email,
                 password
             }
-            const response = await api.post('/auth/register', payload, {
+            const response = await axios.post('/auth/register', payload, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

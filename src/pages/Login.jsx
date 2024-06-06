@@ -1,9 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Card, Input, Button, Typography, Spinner } from '@material-tailwind/react';
-import { Link } from 'react-router-dom';
-import api from '../services/api';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import axios from '../services/api';
 
 const Login = () => {
+
+    const { setAuth } = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
 
     const emailRef = useRef();
     const errRef = useRef();
@@ -11,7 +18,6 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     useEffect(() => {
@@ -37,15 +43,19 @@ const Login = () => {
                 email,
                 password: pwd
             };
-            const response = await api.post('/auth/login', payload, {
+            const response = await axios.post('/auth/login', payload, {
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials: true
             });
-            setSuccess(true);
-            console.log(response.data);
+            // console.log(response.data.accessToken);
+            setAuth(response.data);
+            setEmail('');
+            setPwd('');
+            navigate(from, { replace: true });
         } catch (error) {
-            setErrMsg(error.response.data.error.message);
+            setErrMsg(error?.response?.data.error.message);
         } finally {
             setIsSubmitted(false);
         }
@@ -95,7 +105,7 @@ const Login = () => {
                         />
                     </div>
                     <Button 
-                        className="mt-6" 
+                        className="mt-6 flex justify-center" 
                         fullWidth
                         disabled={isSubmitted}
                         onClick={handleSubmit}
