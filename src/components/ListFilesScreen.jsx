@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, Typography, CardFooter, Button, IconButton, Spinner } from "@material-tailwind/react";
 import { MagnifyingGlassIcon, ArrowDownTrayIcon, TrashIcon } from '@heroicons/react/24/solid';
-// import FileOverview from './FileOverview';
 import useFileList from '../hooks/useFileList';
 import useFileRetrieve from '../hooks/useFileRetrieve';
 import DeleteDialog from './DeleteDialog';
-
-// toastify
 import { toast } from 'react-toastify';
 
 const ListFilesScreen = () => {
@@ -16,13 +14,22 @@ const ListFilesScreen = () => {
     const [filteredFiles, setFilteredFiles] = useState([]);
     const { fetchFileList } = useFileList();
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const getFileList = async () => {
         try {
             const files = await fetchFileList();
             setFileList(files);
             setFilteredFiles(files);
         } catch (error) {
-            toast.error(error.message);
+            if (error?.response?.data?.error.status === 403) {
+                toast.error(error?.response?.data?.error.message);
+                navigate('/login', { state: { from: location.pathname }, replace: true });
+                return;
+            }
+            console.log(error?.response?.data?.error);
+            toast.error(error?.response?.data?.error.message);
         }
     }
 
@@ -125,7 +132,7 @@ const ListFilesScreen = () => {
                     <div className="container flex-auto w-32 border rounded-lg mx-4 text-start p-4">
                         <FileOverview fileArray={fileList} selectedFileId={selected} />
                     </div> */}
-                    {filteredFiles.length !== 0 ? <Card className="h-full w-full overflow-scroll">
+                    {filteredFiles?.length !== 0 ? <Card className="h-full w-full overflow-scroll">
                         <table className="w-full table-auto text-left">
                             <thead>
                                 <tr>
@@ -143,7 +150,7 @@ const ListFilesScreen = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredFiles.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map(({ fileId, fileName, fileType, fileSize, createdAt, lastModified, lastAccessed }, index) => {
+                                {filteredFiles?.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map(({ fileId, fileName, fileType, fileSize, createdAt, lastModified, lastAccessed }, index) => {
                                     const isLast = index === filteredFiles.length - 1;
                                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
                                     return (

@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 import useRefreshToken from "./useRefreshToken";
 
 const useAxiosPrivate = () => {
-    const { refresh } = useRefreshToken();
+    const refresh = useRefreshToken();
     const { auth } = useAuth();
 
     /**
@@ -27,24 +27,20 @@ const useAxiosPrivate = () => {
             response => response,
             async (error) => {
                 const prevRequest = error?.config;
-                console.log("inside useAxiosPrivate response interceptor");
-                console.log(error?.response?.status);
-                console.log(prevRequest._retry);
-
-                if (error?.response?.status === 401 && !prevRequest?._retry) {
+                if (error?.response?.data.error.status === 401 && !prevRequest?._retry) {
                     prevRequest._retry = true;
+                    console.log("inside responseInterceptor: ", error?.response?.data.error.message);
                     const result = await refresh();
-                    prevRequest.headers['Authorization'] = `Bearer ${result.accessToken}`;
+                    prevRequest.headers['Authorization'] = `Bearer ${result?.accessToken}`;
                     return axiosPrivate(prevRequest);
                 }
-
                 return Promise.reject(error);
             }
         );
 
         return () => {
-            privateApi.interceptors.request.eject(requestInterceptor);
-            privateApi.interceptors.response.eject(responseInterceptor);
+            axiosPrivate.interceptors.request.eject(requestInterceptor);
+            axiosPrivate.interceptors.response.eject(responseInterceptor);
         }
 
     }, [auth, refresh]);
