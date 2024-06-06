@@ -32,13 +32,11 @@ const UploadFilesScreen = () => {
             const result = await uploadFile(formData);
             toast.success(result.data.message);
         } catch (error) {
+            toast.error(error?.response?.data?.error.message);
             if (error?.response?.data?.error.status === 403) {
-                toast.error(error?.response?.data?.error.message);
                 navigate('/login', { state: { from: location.pathname }, replace: true });
                 return;
             }
-            console.log(error?.response?.data?.error);
-            toast.error(error?.response?.data?.error.message);
         } finally {
             setIsUploaded(true);
         }

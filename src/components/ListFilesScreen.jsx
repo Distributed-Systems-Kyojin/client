@@ -97,8 +97,6 @@ const ListFilesScreen = () => {
                 navigate('/login', { state: { from: location.pathname }, replace: true });
                 return;
             }
-            console.log(error);
-            console.log(error?.response?.data?.error);
         } finally {
             setIsFileDownloaded(true);
             setCurrDownloadingFileId(null);
