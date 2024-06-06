@@ -27,9 +27,19 @@ const useAxiosPrivate = () => {
             response => response,
             async (error) => {
                 const prevRequest = error?.config;
-                if (error?.response?.data.error.status === 401 && !prevRequest?._retry) {
+
+                let errorData;
+                if (prevRequest?.responseType === "arraybuffer" && error?.response?.data) {
+                    errorData = JSON.parse(new TextDecoder().decode(new Uint8Array(error.response.data)));
+                } else {
+                    errorData = error?.response?.data;
+                }
+
+                console.log(errorData);
+
+                if (errorData?.error.status === 401 && !prevRequest?._retry) {
                     prevRequest._retry = true;
-                    console.log("inside responseInterceptor: ", error?.response?.data.error.message);
+                    console.log("inside responseInterceptor: ", errorData?.error.message);
                     const result = await refresh();
                     prevRequest.headers['Authorization'] = `Bearer ${result?.accessToken}`;
                     return axiosPrivate(prevRequest);
