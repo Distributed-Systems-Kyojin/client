@@ -92,8 +92,13 @@ const ListFilesScreen = () => {
             link.click();
             toast.success("file downloaded successfully");
         } catch (error) {
-            console.log(error.message);
-            toast.error("An error occurred while downloading the file. Please try again later");
+            toast.error(error?.response?.data?.error.message);
+            if (error?.response?.data?.error.status === 403) {
+                navigate('/login', { state: { from: location.pathname }, replace: true });
+                return;
+            }
+            console.log(error);
+            console.log(error?.response?.data?.error);
         } finally {
             setIsFileDownloaded(true);
             setCurrDownloadingFileId(null);
