@@ -5,14 +5,18 @@ const useRefreshToken = () => {
     const { setAuth } = useAuth();
 
     const refresh = async () => {
-        const response = await axios.get('/auth/refresh', {
-            withCredentials: true,
-        });
-        console.log("inside useRefreshToken: ", response.data);
-        setAuth(response.data);
+        try {
+            const response = await axios.get('/auth/refresh', {
+                withCredentials: true,
+            });
+            setAuth(response.data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     }
 
-    return { refresh };
+    return refresh;
 };
 
 export default useRefreshToken;
