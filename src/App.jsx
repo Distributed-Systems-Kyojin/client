@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RequireAuth from "./components/RequireAuth.jsx";
+import PersistLogin from "./components/PersistLogin.jsx";
 
 // toastify
 import { ToastContainer, Slide } from 'react-toastify';
@@ -18,8 +19,10 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* protected routes */}
-          <Route element={<RequireAuth />}>
-            <Route exact path="/" element={<Home />} />
+          <Route element={<PersistLogin />}>
+            <Route element={<RequireAuth />}>
+              <Route exact path="/" element={<Home />} />
+            </Route>
           </Route>
         </Routes>
       </Router>
