@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-
+import LogoutDialog from './LogoutDialog';
 import { Card, Typography, List, ListItem, ListItemPrefix, ListItemSuffix, Chip, Drawer, IconButton, Tooltip } from '@material-tailwind/react';
 import { UserCircleIcon, PowerIcon, FolderArrowDownIcon, FolderPlusIcon, MagnifyingGlassIcon, PresentationChartBarIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 
 const Sidebar = ({ setSelectedScreen }) => {
+
+    const [logoutOpen, setLogoutOpen] = useState(false);
+    const handleLogoutDialog = () => setLogoutOpen(!logoutOpen);
+
     return (
         <>
             <Card className="h-[calc(100vh-2rem)] w-full max-w-[50rem] p-4 shadow-xl shadow-blue-gray-900/5">
@@ -38,7 +42,7 @@ const Sidebar = ({ setSelectedScreen }) => {
                         </ListItemPrefix>
                         Profile
                     </ListItem>
-                    <ListItem className='my-2'>
+                    <ListItem className='my-2' onClick={handleLogoutDialog}>
                         <ListItemPrefix>
                             <PowerIcon className="h-7 w-7" />
                         </ListItemPrefix>
@@ -76,6 +80,10 @@ const Sidebar = ({ setSelectedScreen }) => {
                     </IconButton>
                 </Tooltip>
             </Card>
+            <LogoutDialog
+                logoutOpen={logoutOpen}
+                handleLogoutDialog={handleLogoutDialog} 
+            />
         </>
     );
 }
