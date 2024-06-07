@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Card, Input, Button, Typography, Spinner } from '@material-tailwind/react';
+import { Card, Input, Button, Typography, Spinner, Checkbox } from '@material-tailwind/react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import axios from '../services/api';
 
 const Login = () => {
 
-    const { setAuth } = useAuth();
+    const { setAuth, persist, setPersist } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -61,6 +61,14 @@ const Login = () => {
         }
     }
 
+    const togglePersist = () => {
+        setPersist(!persist);
+    }
+
+    useEffect(() => {
+        localStorage.setItem('persist', persist);
+    }, [persist]);
+
     return (
         <div className="container container-fluid mx-auto w-full h-screen flex justify-center items-center">
             <Card color="transparent" shadow={false}>
@@ -104,6 +112,22 @@ const Login = () => {
                             onChange={(e) => setPwd(e.target.value)}
                         />
                     </div>
+                    <Checkbox
+                        label={
+                            <Typography
+                                variant="small"
+                                color="gray"
+                                className="flex items-center font-normal"
+                            >
+                                Trust this device
+                            </Typography>
+                        }
+                        containerProps={{ className: "-ml-2.5" }}
+                        className='persistCheck'
+                        id='persist'
+                        checked={persist}
+                        onChange={togglePersist}
+                    />
                     <Button 
                         className="mt-6 flex justify-center" 
                         fullWidth

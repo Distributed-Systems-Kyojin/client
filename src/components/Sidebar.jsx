@@ -75,7 +75,7 @@ const Sidebar = ({ setSelectedScreen }) => {
                     </IconButton>
                 </Tooltip>
                 <Tooltip placement="right" content="log out" color="blue-gray">
-                    <IconButton className='lg:hidden my-2' variant="text" size="lg">
+                    <IconButton className='lg:hidden my-2' variant="text" size="lg" onClick={handleLogoutDialog}>
                         <PowerIcon className="h-7 w-7 stroke-2 text-blue-gray-400" />
                     </IconButton>
                 </Tooltip>
