@@ -28,7 +28,6 @@ const UploadFilesScreen = () => {
         const formData = new FormData();
         try {
             formData.append('file', file);
-            console.log("inside handleFileUpload: ", file);
             const result = await uploadFile(formData);
             toast.success(result.data.message);
         } catch (error) {

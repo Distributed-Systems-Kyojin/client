@@ -9,7 +9,6 @@ const useFileUpload = () => {
 
     const uploadFile = useCallback(async (formData) => {
         try {
-            console.log("inside uploadFile hook: ", formData.get("file"));
             const response = await axiosPrivate.post("/file/upload", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
